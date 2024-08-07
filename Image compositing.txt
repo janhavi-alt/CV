@@ -1,0 +1,19 @@
+pip install pillow
+
+from PIL import Image
+
+# Load images and convert to mode 'L'
+im1 = Image.open(r'C:\Users\Admin\Downloads\im1.png').convert('L')
+im2 = Image.open(r'C:\Users\Admin\Downloads\im2.webp').convert('L')
+mask = Image.open(r'C:\Users\Admin\Downloads\im3.webp').convert('L')
+
+# Ensure all images are the same size
+size = im1.size
+im2 = im2.resize(size)
+mask = mask.resize(size)
+
+# Composite the images
+im3 = Image.composite(im1, im2, mask)
+
+# Show the result
+im3.show()

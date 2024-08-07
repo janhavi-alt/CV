@@ -1,0 +1,33 @@
+pip install imutils
+pip install opencv
+
+download video pd.mp4
+
+import cv2
+import imutils
+
+# Initializing the HOG person detector
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+
+# Video capture from file
+cap = cv2.VideoCapture(r'C:\Users\Janhavi\Downloads\pd.mp4')
+
+while cap.isOpened():
+    ret, image = cap.read()
+    if not ret:
+        break
+
+    image = imutils.resize(image, width=min(400, image.shape[1]))
+    regions, _ = hog.detectMultiScale(image, winStride=(4, 4), padding=(4, 4), scale=1.05)
+
+    for (x, y, w, h) in regions:
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+    cv2.imshow("Image", image)
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+

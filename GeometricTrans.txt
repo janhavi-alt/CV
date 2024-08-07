@@ -1,0 +1,30 @@
+pip install opencv
+pip install numpy
+
+
+import cv2
+
+import numpy as np
+image = cv2.imread("C:/Users/Admin/Downloads/image1.jpg")
+
+#perform linear and cubic
+image_re_linear = cv2.resize(image, None, fx=2.5,fy=3.5, interpolation=cv2.INTER_LINEAR)
+image_re_cubic = cv2.resize(image , None, fx=2.5,fy=3.5, interpolation=cv2.INTER_CUBIC)
+
+# Perform the translation
+matrix = np.float32([[1, 0, 80], [0, 1, 80]])
+translated = cv2.warpAffine(image, matrix, (image.shape[1], image.shape[0]))
+
+#Rotation
+height, width = image.shape[:2]
+matrix1 = cv2.getRotationMatrix2D((width/2,height/2) , 20 , 1)
+Rotation = cv2.warpAffine(image, matrix1 , (width , height))
+
+# Display the translated image
+cv2.imshow('Rotation' , Rotation)
+cv2.imshow('Translation', translated)
+cv2.imshow('Cubic' , image_re_cubic)
+cv2.imshow('Linear' , image_re_linear)
+cv2.imshow('Original' , image)
+cv2.waitKey(100000)
+cv2.destroyAllWindows()

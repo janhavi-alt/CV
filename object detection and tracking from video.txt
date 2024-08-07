@@ -1,0 +1,75 @@
+pip install opencv
+pip install numpy
+pip install imutils
+
+import cv2
+import numpy as np
+import imutils
+
+# Video capture from file
+cap = cv2.VideoCapture(r'C:\Users\Janhavi\Downloads\football2.mp4')
+if not cap.isOpened():
+    print("Error: Could not open video.")
+    exit()
+
+object_detected = False
+object_bbox = None
+
+def find_initial_football_position(frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    lower_white = np.array([0, 0, 150])
+    upper_white = np.array([180, 25, 255])
+    mask = cv2.inRange(hsv, lower_white, upper_white)
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if contours:
+        largest_contour = max(contours, key=cv2.contourArea)
+        (x, y, w, h) = cv2.boundingRect(largest_contour)
+        return (x, y, w, h)
+    else:
+        return None
+
+ret, frame = cap.read()
+if ret:
+    frame = imutils.resize(frame, width=800)
+    object_bbox = find_initial_football_position(frame)
+    if object_bbox:
+        object_detected = True
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    frame = imutils.resize(frame, width=800)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    lower_white = np.array([0, 0, 150])
+    upper_white = np.array([180, 25, 255])
+    mask = cv2.inRange(hsv, lower_white, upper_white)
+    mask = cv2.erode(mask, None, iterations=2)
+    mask = cv2.dilate(mask, None, iterations=2)
+    contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    object_detected = False
+    object_bbox = None
+    for contour in contours:
+        # Compute bounding box and area
+        (x, y, w, h) = cv2.boundingRect(contour)
+        area = cv2.contourArea(contour)
+        if area > 1000 and w > 30 and h > 30:
+            # Update object bbox
+            object_bbox = (x, y, w, h)
+            object_detected = True
+            break
+
+    if object_detected:
+        (x, y, w, h) = object_bbox
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    cv2.imshow("Football Detection", frame)
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()

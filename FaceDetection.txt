@@ -1,0 +1,24 @@
+pip install mtcnn
+pip install opencv
+
+from mtcnn import MTCNN
+import cv2
+
+# Load image from file
+filename = r'C:\Users\Janhavi\Downloads\face.jpg'
+pixels = cv2.imread(filename)
+
+# Create a detector with default weights
+detector = MTCNN()
+
+# Find faces in the image
+faces = detector.detect_faces(pixels)
+
+# Display faces on the original image
+for face in faces:
+    x, y, width, height = face['box']
+    cv2.rectangle(pixels, (x, y), (x + width, y + height), (0, 0, 255), 2)
+
+cv2.imshow('Face', pixels)
+cv2.waitKey(0)
+
