@@ -1,4 +1,7 @@
-First install the model files 
+First install the model files :
+https://drive.google.com/file/d/1QRizN_hZmTc6l6fcwzKxsWj_0qzYrDQJ/view
+https://drive.google.com/file/d/1TAw1drQpVZZ8LFjryR6YzKA87aowaO1r/view
+https://drive.google.com/file/d/13odqq3DO6tSKMapvAe2pj3HppM1HQsBG/view
 
 #pip install opencv
 #pip install numpy
